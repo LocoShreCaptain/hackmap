@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Ideas - HackMap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="index.html" class="text-2xl font-bold text-indigo-600">HackMap</a>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                        <a href="index.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Home</a>
+                        <a href="browse.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Browse</a>
+                        <a href="projects.html" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Projects</a>
+                        <a href="team-builder.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Team Builder</a>
+                    </div>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center">
+                    <a href="notifications.html" class="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <span class="sr-only">View notifications</span>
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                    </a>
+                    <div class="ml-3 relative">
+                        <div id="auth-buttons">
+                            <a href="login.html" class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">Login</a>
+                            <a href="signup.html" class="bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium">Sign Up</a>
+                        </div>
+                        <div id="user-menu" class="hidden">
+                            <a href="dashboard.html" class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                            <button id="logout-btn" class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Post Project Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Share Your Project Idea</h2>
+            <form id="project-form" class="space-y-4">
+                <div>
+                    <label for="project-title" class="block text-sm font-medium text-gray-700">Project Title</label>
+                    <input type="text" id="project-title" name="project-title" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+                <div>
+                    <label for="project-description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea id="project-description" name="project-description" rows="3" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                </div>
+                <div>
+                    <label for="tech-stack" class="block text-sm font-medium text-gray-700">Tech Stack</label>
+                    <input type="text" id="tech-stack" name="tech-stack" placeholder="e.g., React, Node.js, MongoDB" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Post Project
+                </button>
+            </form>
+        </div>
+
+        <!-- Projects List -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Project Ideas</h2>
+            <div id="projects-list" class="space-y-6">
+                <!-- Project cards will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            // Handle project submission
+            const projectForm = document.getElementById('project-form');
+            if (projectForm) {
+                if (!currentUser) {
+                    projectForm.innerHTML = `
+                        <div class="text-center py-4">
+                            <p class="text-gray-600 mb-4">Please log in to share your project ideas.</p>
+                            <a href="login.html" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+                                Login to Continue
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    projectForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+
+                        const title = document.getElementById('project-title').value;
+                        const description = document.getElementById('project-description').value;
+                        const techStack = document.getElementById('tech-stack').value
+                            .split(',')
+                            .map(tech => tech.trim())
+                            .filter(tech => tech);
+
+                        const newProject = {
+                            id: Date.now(),
+                            title,
+                            description,
+                            techStack,
+                            author: currentUser.name,
+                            likes: 0,
+                            comments: [],
+                            timestamp: new Date().toISOString()
+                        };
+
+                        // Get existing projects
+                        const projects = JSON.parse(localStorage.getItem('projectIdeas')) || [];
+                        projects.unshift(newProject);
+                        localStorage.setItem('projectIdeas', JSON.stringify(projects));
+
+                        showSuccess('Project idea posted successfully!');
+                        projectForm.reset();
+                        displayProjects();
+                    });
+                }
+            }
+
+            // Display projects
+            function displayProjects() {
+                const projects = JSON.parse(localStorage.getItem('projectIdeas')) || [];
+                const projectsList = document.getElementById('projects-list');
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                const allTeams = users.flatMap(user => user.teams || []);
+
+                if (projects.length === 0) {
+                    projectsList.innerHTML = '<p class="text-gray-500">No project ideas yet. Be the first to share!</p>';
+                } else {
+                    projectsList.innerHTML = projects.map(project => {
+                        // Find teams working on this project
+                        const projectTeams = allTeams.filter(team => team.projectId === project.id);
+                        
+                        return `
+                            <div class="bg-gray-50 rounded-lg p-6">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-gray-900">${project.title}</h3>
+                                        <p class="text-sm text-gray-500">Posted by ${project.author}</p>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <button class="text-gray-500 hover:text-indigo-600" onclick="${currentUser ? `handleLike(${project.id})` : 'showLoginPrompt()'}">
+                                            <span class="mr-1">❤️</span> ${project.likes}
+                                        </button>
+                                        <button class="text-gray-500 hover:text-indigo-600" onclick="toggleComments(${project.id})">
+                                            <span class="mr-1">💬</span> ${project.comments.length}
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="mt-4 text-gray-600">${project.description}</p>
+                                <div class="mt-4">
+                                    <h4 class="text-sm font-medium text-gray-900">Tech Stack:</h4>
+                                    <div class="flex flex-wrap gap-2 mt-1">
+                                        ${project.techStack.map(tech => `
+                                            <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-sm rounded-full">
+                                                ${tech}
+                                            </span>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <h4 class="text-sm font-medium text-gray-900">Teams Working on This Project:</h4>
+                                    <div id="teams-${project.id}" class="mt-2 space-y-2">
+                                        ${projectTeams.length > 0 ? projectTeams.map(team => `
+                                            <div class="bg-white rounded-lg p-3">
+                                                <div class="flex justify-between items-center">
+                                                    <div>
+                                                        <h5 class="font-medium text-gray-900">${team.name}</h5>
+                                                        <p class="text-sm text-gray-500">${team.members.length} members</p>
+                                                    </div>
+                                                    <span class="px-2 py-1 text-sm rounded-full ${team.status === 'recruiting' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
+                                                        ${team.status}
+                                                    </span>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <h6 class="text-xs font-medium text-gray-900">Required Skills:</h6>
+                                                    <div class="flex flex-wrap gap-1 mt-1">
+                                                        ${team.requiredSkills.map(skill => `
+                                                            <span class="px-2 py-0.5 bg-gray-100 text-gray-800 text-xs rounded-full">
+                                                                ${skill}
+                                                            </span>
+                                                        `).join('')}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `).join('') : '<p class="text-gray-500">No teams working on this project yet.</p>'}
+                                    </div>
+                                    <button onclick="${currentUser ? `showTeamBuilder(${project.id})` : 'showLoginPrompt()'}" class="mt-2 text-indigo-600 hover:text-indigo-700 text-sm font-medium">
+                                        Create a Team for This Project
+                                    </button>
+                                </div>
+                                <div id="comments-${project.id}" class="hidden mt-4">
+                                    <div class="space-y-4">
+                                        ${project.comments.map(comment => `
+                                            <div class="bg-white rounded-lg p-4">
+                                                <p class="text-sm font-medium text-gray-900">${comment.author}</p>
+                                                <p class="mt-1 text-gray-600">${comment.text}</p>
+                                                <p class="mt-1 text-xs text-gray-500">${formatDate(comment.timestamp)}</p>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                    ${currentUser ? `
+                                        <form class="mt-4" onsubmit="handleComment(event, ${project.id})">
+                                            <div class="flex gap-2">
+                                                <input type="text" placeholder="Add a comment..." required
+                                                    class="flex-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+                                                    Comment
+                                                </button>
+                                            </div>
+                                        </form>
+                                    ` : `
+                                        <div class="mt-4 text-center">
+                                            <p class="text-gray-600 mb-2">Please log in to comment</p>
+                                            <a href="login.html" class="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
+                                                Login to Comment
+                                            </a>
+                                        </div>
+                                    `}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            }
+
+            // Function to show login prompt
+            function showLoginPrompt() {
+                showError('Please log in to perform this action');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+            }
+
+            // Function to redirect to team builder with project pre-selected
+            function showTeamBuilder(projectId) {
+                localStorage.setItem('selectedProjectId', projectId);
+                window.location.href = 'team-builder.html';
+            }
+
+            // Handle likes
+            function handleLike(projectId) {
+                if (!currentUser) {
+                    showLoginPrompt();
+                    return;
+                }
+
+                const projects = JSON.parse(localStorage.getItem('projectIdeas')) || [];
+                const projectIndex = projects.findIndex(p => p.id === projectId);
+                
+                if (projectIndex !== -1) {
+                    projects[projectIndex].likes++;
+                    localStorage.setItem('projectIdeas', JSON.stringify(projects));
+                    displayProjects();
+                }
+            }
+
+            // Toggle comments section
+            function toggleComments(projectId) {
+                const commentsSection = document.getElementById(`comments-${projectId}`);
+                commentsSection.classList.toggle('hidden');
+            }
+
+            // Handle comments
+            function handleComment(event, projectId) {
+                event.preventDefault();
+                
+                if (!currentUser) {
+                    showLoginPrompt();
+                    return;
+                }
+
+                const commentText = event.target.querySelector('input').value;
+                const projects = JSON.parse(localStorage.getItem('projectIdeas')) || [];
+                const projectIndex = projects.findIndex(p => p.id === projectId);
+                
+                if (projectIndex !== -1) {
+                    const newComment = {
+                        id: Date.now(),
+                        author: currentUser.name,
+                        text: commentText,
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    projects[projectIndex].comments.push(newComment);
+                    localStorage.setItem('projectIdeas', JSON.stringify(projects));
+                    displayProjects();
+                    event.target.reset();
+                }
+            }
+
+            // Initialize projects display
+            displayProjects();
+        });
+    </script>
+</body>
+</html> 

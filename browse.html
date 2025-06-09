@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Hackathons - HackMap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="index.html" class="text-2xl font-bold text-indigo-600">HackMap</a>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                        <a href="index.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Home</a>
+                        <a href="browse.html" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Browse</a>
+                        <a href="projects.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Projects</a>
+                        <a href="team-builder.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Team Builder</a>
+                    </div>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center">
+                    <a href="notifications.html" class="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <span class="sr-only">View notifications</span>
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                    </a>
+                    <div class="ml-3 relative">
+                        <div id="auth-buttons">
+                            <a href="login.html" class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">Login</a>
+                            <a href="signup.html" class="bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium">Sign Up</a>
+                        </div>
+                        <div id="user-menu" class="hidden">
+                            <a href="dashboard.html" class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                            <button id="logout-btn" class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Filters -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Filters</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label for="theme" class="block text-sm font-medium text-gray-700">Theme</label>
+                    <select id="theme" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <option value="">All Themes</option>
+                        <option value="AI">Artificial Intelligence</option>
+                        <option value="Web3">Web3 & Blockchain</option>
+                        <option value="Sustainability">Sustainability</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
+                    <select id="location" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <option value="">All Locations</option>
+                        <option value="Virtual">Virtual</option>
+                        <option value="San Francisco">San Francisco</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="date" class="block text-sm font-medium text-gray-700">Date Range</label>
+                    <select id="date" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <option value="">All Dates</option>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="this-month">This Month</option>
+                        <option value="next-month">Next Month</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hackathon Grid -->
+        <div id="hackathon-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Hackathon cards will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Load and display hackathons
+        document.addEventListener('DOMContentLoaded', () => {
+            const hackathons = JSON.parse(localStorage.getItem('hackathons')) || [];
+            const hackathonGrid = document.getElementById('hackathon-grid');
+            
+            // Display all hackathons initially
+            hackathonGrid.innerHTML = hackathons.map(hackathon => createHackathonCard(hackathon)).join('');
+
+            // Filter functionality
+            const themeFilter = document.getElementById('theme');
+            const locationFilter = document.getElementById('location');
+            const dateFilter = document.getElementById('date');
+
+            function applyFilters() {
+                const theme = themeFilter.value;
+                const location = locationFilter.value;
+                const date = dateFilter.value;
+
+                const filteredHackathons = hackathons.filter(hackathon => {
+                    const themeMatch = !theme || hackathon.theme.includes(theme);
+                    const locationMatch = !location || hackathon.location === location;
+                    
+                    let dateMatch = true;
+                    if (date) {
+                        const hackathonDate = new Date(hackathon.startDate);
+                        const today = new Date();
+                        
+                        switch(date) {
+                            case 'upcoming':
+                                dateMatch = hackathonDate > today;
+                                break;
+                            case 'this-month':
+                                const thisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                                const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+                                dateMatch = hackathonDate >= thisMonth && hackathonDate < nextMonth;
+                                break;
+                            case 'next-month':
+                                const nextMonthStart = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+                                const twoMonthsStart = new Date(today.getFullYear(), today.getMonth() + 2, 1);
+                                dateMatch = hackathonDate >= nextMonthStart && hackathonDate < twoMonthsStart;
+                                break;
+                        }
+                    }
+
+                    return themeMatch && locationMatch && dateMatch;
+                });
+
+                hackathonGrid.innerHTML = filteredHackathons.map(hackathon => createHackathonCard(hackathon)).join('');
+            }
+
+            // Add event listeners to filters
+            themeFilter.addEventListener('change', applyFilters);
+            locationFilter.addEventListener('change', applyFilters);
+            dateFilter.addEventListener('change', applyFilters);
+        });
+    </script>
+</body>
+</html> 
